@@ -111,9 +111,13 @@
 			case 80:
 				if (pause) {
 					pause = false;
+					
+					lastTime = Date.now()-lastTime;
 				}
 				else {
 					pause = true;
+
+					lastTime = Date.now()-lastTime;
 
 					periodCell.style.color = "#d54e53";
 					timeCell.style.color = "#d54e53";
