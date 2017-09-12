@@ -3,22 +3,125 @@
 <head>
 	<title>Space Timer</title>
 	<link rel="shortcut icon" type="image/png" href="favicon.png"/>
+	<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro|Source+Serif+Pro" rel="stylesheet">
 	<style>
 		body {
-			background: green;
+			position: relative;
+			background-color: #eaeaea;
+			color: #2a2a2a;
+			padding: 50px;
+		}
+		table {
+			margin: auto;
+			text-align: right;
+		}
+		th {
+			padding: 4px 35px 4px 35px;
+			font-family: 'Source Sans Pro', sans-serif;
+			font-size: x-large;
+		}
+		td {
+			padding: 6px 35px 0px 0px;
+			font-family: 'Source Code Pro', monospace;
+			font-size: large;
+		}
+		#overlay {
+			position: absolute;
+			z-index: 20;
+			top: 0; left: 0;
+			width: 100%; height: 100%;
+			background-color: #2a2a2a;
 		}
 	</style>
-	<script>
-		document.body.addEventListener("keypress", keypressed);
-
-		function keypressed(e) {
-			switch (e.keyCode) {
-
-			}
-		}
-	</script>
+	
 </head>
 <body>
-Hello World
+<table id="scoreTable">
+	<thead>
+		<tr>
+			<th>Period</th>
+			<th>Time</th>
+		</tr>
+	</thead>
+	<tbody></tbody>
+</table>
+
+<script>
+	var lastTime = Date.now();
+	var scoreTable = document.getElementById("scoreTable");
+	var scores = scoreTable.getElementsByTagName("tbody")[0];
+	var period, pause, currentRow, periodCell, timeCell;
+
+	function reset() {
+		period = 1;
+		pause = true;
+
+		scores.remove();
+		scores = document.createElement("tbody");
+		scoreTable.appendChild(scores);
+
+		currentRow = scores.insertRow(0);
+
+		periodCell = currentRow.insertCell(0);
+		timeCell = currentRow.insertCell(1);
+
+		periodCell.innerHTML = period;
+		timeCell.innerHTML = (0).toFixed(3);
+	}
+		
+	reset();
+
+	setInterval(function() {
+		if (!pause)
+			timeCell.innerHTML = ((Date.now()-lastTime)/1000).toFixed(3);
+	}, 1);
+
+	document.body.addEventListener("keydown", keydowned);
+
+	function keydowned(e) {
+		switch (e.keyCode) {
+			case 82:
+				reset();
+				break;
+			case 32:
+				if (pause) {
+					pause = false;
+				}
+				else {
+					period++;
+
+					periodCell.style.color = "";
+					timeCell.style.color = "";
+
+					currentRow = scores.insertRow(0);
+
+					periodCell = currentRow.insertCell(0);
+					timeCell = currentRow.insertCell(1);
+					
+					periodCell.innerHTML = period;
+					timeCell.innerHTML = (Date.now()-lastTime)/1000;
+				}
+
+				periodCell.style.color = "#b9ca4a";
+				timeCell.style.color = "#b9ca4a";
+			
+				lastTime = Date.now();
+				e.preventDefault();
+				break;
+			case 80:
+				if (pause) {
+					pause = false;
+				}
+				else {
+					pause = true;
+
+					periodCell.style.color = "#d54e53";
+					timeCell.style.color = "#d54e53";
+				}
+				break;
+		}
+	}
+</script>
+
 </body>
 </html>
